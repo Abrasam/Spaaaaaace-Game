@@ -21,12 +21,9 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 import com.olympiarpg.game.util.Mode;
 import com.olympiarpg.game.util.SoundUtil;
+import com.olympiarpg.game.util.Stats;
 import com.olympiarpg.game.world.Planet;
 import com.olympiarpg.game.world.Space;
-
-/*
- * TODO: Further "wall of separation".
- */
 
 public class Main {
 	
@@ -42,6 +39,7 @@ public class Main {
 	
 	//Mode, space or planet, defaults to space.
 	public static Mode gameMode = Mode.SPACE;
+	private static Mode pMode;
 	
 	//Current planet, defaults to null as you start in space.
 	public static Planet currentPlanet = null;
@@ -51,7 +49,7 @@ public class Main {
 	private static int xF = 5;
 	private static int yF = 4;
 	private static int direction = 0; //0=up, 1=right, 2=down, 3=left
-		
+	
 	public static void main(String[] args) {
 		//Initialise display.
 		try {
@@ -84,6 +82,10 @@ public class Main {
 			textures.put(5, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/space5.png")), GL_NEAREST));
 			textures.put(6, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/space6.png")), GL_NEAREST));
 			textures.put(7, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/space7.png")), GL_NEAREST));
+			textures.put(8, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/space8.png")), GL_NEAREST));
+			textures.put(9, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/space9.png")), GL_NEAREST));
+			textures.put(10, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/space10.png")), GL_NEAREST));
+			textures.put(11, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/space11.png")), GL_NEAREST));
 			textures.put(20, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/blackhole1.png")), GL_NEAREST));
 			textures.put(21, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/blackhole2.png")), GL_NEAREST));
 			textures.put(22, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/blackhole3.png")), GL_NEAREST));
@@ -94,6 +96,7 @@ public class Main {
 			textures.put(53, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/supernova4.png")), GL_NEAREST));
 			textures.put(42, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/rocket.png")), GL_NEAREST));
 			textures.put(43, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/rocketf.png")), GL_NEAREST));
+			textures.put(70, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/sat1.png")), GL_NEAREST));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -102,7 +105,7 @@ public class Main {
 		
 		//Load font.
 		Font f = new Font("Arial", Font.BOLD, 24);
-		font = new TrueTypeFont(f, false);
+		font = new TrueTypeFont(f, true);
 		
 		//Initialise sound.
 		try {
@@ -111,8 +114,12 @@ public class Main {
 			e1.printStackTrace();
 		}
 		
+		//Stuff and things.
+		Keyboard.enableRepeatEvents(false);
+		
 		//Initialise game.
-		Space.init();
+		Space.initNew();
+		Stats.initNew();
 		
 		//Render loop.
 		while (!Display.isCloseRequested()) {
@@ -124,18 +131,45 @@ public class Main {
 	public static void render() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		Space.getCurrentSector().draw(textures);
+		if (gameMode == Mode.SPACE) {
 		
-		//drawGrid();
-		
-		drawShip(pX, pY);
-		
-		drawHUD();
+			Space.getCurrentSector().draw(textures);
+			
+			//drawGrid();
+			
+			drawShip(pX, pY);
+			 
+			drawHUD(false);
+		} else if (gameMode == Mode.INVENTORY) {
+			drawInventory();
+			drawHUD(true);
+		} else {
+			System.out.println("ERROR!");
+		}
 				
 		Display.update();
 		Display.sync(60);
 	}
 	
+	private static void drawInventory() {
+		glDisable(GL_TEXTURE_2D);
+		glColor4f(80f/255, 80f/255, 80f/255, 1);
+		glBegin(GL_QUADS);
+			glVertex2f(0, 0);
+			glVertex2f(1280, 0);
+			glVertex2f(1280, 768);
+			glVertex2f(0, 768);
+		glEnd();
+		glColor4f(127f/255, 127f/255, 127f/255, 1);
+		for (int x = 0; x < 10; x++) {
+			for (int y = 0; y < 6; y++) {
+				glRecti(x*128+10, y*128+10, x*128+118, y*128+118);
+			}
+		}
+		glEnable(GL_TEXTURE_2D);
+		keyboardInv();
+	}
+
 	public static void drawGrid() {
 		glDisable(GL_TEXTURE_2D);
 		glColor4f(0, 191, 255, 0.25f);
@@ -165,21 +199,23 @@ public class Main {
 		Color.white.bind();
 	}
 	
-	public static void drawHUD() {
-		if (gameMode == Mode.SPACE) {
-			glDisable(GL_TEXTURE_2D);
-			int sX = Math.round(Mouse.getX()/128);
-			int sY = Math.round((768+50-Mouse.getY()-1)/128);
-			glColor4f(0, 0, 0, 0.35f);
-			glRecti(sX*128, sY*128+1, sX*128+128, sY*128+128+1);
-			glColor4f(0, 191, 255, 1);
-			glRecti(0, 769, 1280, 768+50);
-			glEnable(GL_TEXTURE_2D);
-			font.drawString(200, 775, "HUD goes here!", Color.magenta);
-			Color.white.bind();
-		} else {
-			//PLANET HUD HERE.
-		}
+	public static void drawHUD(boolean inv) {
+		glDisable(GL_TEXTURE_2D);
+		int sX = Math.round(Mouse.getX()/128);
+		int sY = Math.round((768+50-Mouse.getY()-1)/128);
+		glColor4f(0, 0, 0, 0.35f);
+		glRecti(sX*128, sY*128, sX*128+128, sY*128+128);
+		glColor4f(0, 191, 255, 1);
+		glRecti(0, 769, 1280, 768+50);
+		glEnable(GL_TEXTURE_2D);
+		font.drawString(64, 780, "Money: " + Stats.money, Color.blue);
+		font.drawString(256, 780, "Fuel: " + Stats.fuel, Color.blue);
+		font.drawString(256+128, 780, "Press " + (!inv ? "<E> to enter " : "<ESC> to leave ") + "inventory.", Color.blue);
+		Color.white.bind();
+	}
+	
+	public static void moveEvent() {
+		Stats.fuel--;
 	}
 	
 	public static boolean hasMoved() {
@@ -279,21 +315,7 @@ public class Main {
 				case 3:
 					xF -= 1;
 				}
-				counter = 60;
-			} else if (Keyboard.isKeyDown(Keyboard.KEY_S) || Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-				switch (direction) {
-				case 0:
-					yF -= -1;
-					break;
-				case 1:
-					xF += -1;
-					break;
-				case 2:
-					yF += -1;
-					break;
-				case 3:
-					xF -= -1;
-				}
+				moveEvent();
 				counter = 60;
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_LEFT)) { 
 				direction += (direction == 0 ? 3 : -1);
@@ -301,7 +323,16 @@ public class Main {
 				direction -= (direction == 3 ? 3 : -1);
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_R)) {
 				Space.getCurrentSector().generate();
+			} else if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
+				pMode = (gameMode == Mode.SPACE || gameMode == Mode.PLANET ? gameMode : Mode.SPACE);
+				gameMode = Mode.INVENTORY;
 			}
+		}
+	}
+	
+	public static void keyboardInv() {
+		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+			gameMode = pMode;
 		}
 	}
 }

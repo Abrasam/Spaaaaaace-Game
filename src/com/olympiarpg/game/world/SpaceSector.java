@@ -15,23 +15,20 @@ import org.newdawn.slick.opengl.Texture;
 
 public class SpaceSector {
 
-	/*
-	 * Please note that potential tiles at time of writing this comment are:
-	 * space1 (1), space2 (2), space3 (3)
-	 * There will be more added shortly.
-	 */
-
-
 	private int[][] tiles = new int[10][6];
 
 	public SpaceSector() {
-		weights.put(1, 11);
-		weights.put(2, 3);
+		weights.put(1, 6);
+		weights.put(2, 2);
 		weights.put(3, 59);
-		weights.put(4, 3);
-		weights.put(5, 9);
+		weights.put(4, 2);
+		weights.put(5, 3);
 		weights.put(6, 12);
-		weights.put(7, 3);
+		weights.put(7, 2);
+		weights.put(8, 59);
+		weights.put(9, 2);
+		weights.put(10, 6);
+		weights.put(11, 3);
 		generate();
 	}
 
@@ -54,51 +51,37 @@ public class SpaceSector {
 				tiles[x][y] = getRandomTexture() + 1;
 			}
 		}
-		
-		if (r.nextInt(4) == 2) {
+
+		if (r.nextInt(3) == 1) {
 			int x = r.nextInt(9);
 			int y = r.nextInt(5);
-			if (r.nextInt(2) == 1) {
+			int rand = r.nextInt(3);
+			if (rand == 1) {
 				tiles[x][y] = 20;
 				tiles[x+1][y] = 21;
 				tiles[x+1][y+1] = 22;
 				tiles[x][y+1] = 23;
-			} else {
+			} else if (rand == 0) {
 				tiles[x][y] = 50;
 				tiles[x+1][y] = 51;
 				tiles[x+1][y+1] = 52;
 				tiles[x][y+1] = 53;
 			}
 		}
-	}
 
-	private boolean isValidPlace(int x, int y) {
-		if (x != 9 && y != 5) {
-			if (tiles[x][y] != 20 && tiles[x+1][y] != 20 && tiles[x][y+1] != 20 &&  tiles[x+1][y+1] != 20) {
-				if (tiles[x][y] != 21 && tiles[x+1][y] != 21 && tiles[x][y+1] != 21 &&  tiles[x+1][y+1] != 21) {
-					if (tiles[x][y] != 22 && tiles[x+1][y] != 22 && tiles[x][y+1] != 22 &&  tiles[x+1][y+1] != 22) {
-						if (tiles[x][y] != 23 && tiles[x+1][y] != 23 && tiles[x][y+1] != 23 &&  tiles[x+1][y+1] != 23) {
-							if (tiles[x][y] != 50 && tiles[x+1][y] != 50 && tiles[x][y+1] != 50 &&  tiles[x+1][y+1] != 50) {
-								if (tiles[x][y] != 51 && tiles[x+1][y] != 51 && tiles[x][y+1] != 51 &&  tiles[x+1][y+1] != 51) {
-									if (tiles[x][y] != 52 && tiles[x+1][y] != 52 && tiles[x][y+1] != 52 &&  tiles[x+1][y+1] != 52) {
-										if (tiles[x][y] != 53 && tiles[x+1][y] != 53 && tiles[x][y+1] != 53 &&  tiles[x+1][y+1] != 53) {
-											return true;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
+		if (r.nextInt(3) == 1) {
+			int x = r.nextInt(9);
+			int y = r.nextInt(5);
+			if (tiles[x][y] != 20 && tiles[x][y] != 21 && tiles[x][y] != 22 && tiles[x][y] != 23 && tiles[x][y] != 50 && tiles[x][y] != 51 && tiles[x][y] != 52 && tiles[x][y] != 53) {
+				tiles[x][y] = 70;
 			}
 		}
-		return false;
 	}
 
 	private int getRandomTexture() {
 		int randomIndex = -1;
-		double random = Math.random() * 100;
-		for (int i = 0; i < 7; ++i)
+		double random = Math.random() * 154;
+		for (int i = 0; i < 11; ++i)
 		{
 			random -= weights.get(i+1);
 			if (random <= 0.0d)

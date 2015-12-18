@@ -11,7 +11,7 @@ public class Space {
 	public static int currentSectorX = 0;
 	public static int currentSectorY = 0;
 
-	public static void init() {
+	public static void initNew() {
 		sectors.put(new Coordinate(0, 0), new SpaceSector());
 	}
 
