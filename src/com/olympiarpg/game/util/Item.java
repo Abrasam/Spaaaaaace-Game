@@ -4,11 +4,15 @@ public class Item {
 	private String name;
 	private int value;
 	private String description;
+	private ItemType type;
+	public int texId;
 	
-	public Item(String n, String d, int v) {
+	public Item(String n, String d, int v, ItemType type, int texId) {
 		setName(n);
 		setDescription(d);
 		setValue(v);
+		this.type = type;
+		this.texId = texId;
 	}
 
 	public String getName() {
@@ -33,5 +37,9 @@ public class Item {
 
 	public void setValue(int value) {
 		this.value = value;
+	}
+
+	public ItemType getType() {
+		return type;
 	}
 }
