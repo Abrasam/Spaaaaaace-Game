@@ -7,6 +7,8 @@ import com.olympiarpg.game.world.Space;
 import static com.olympiarpg.game.main.Main.*;
 
 public class Input {
+	public static boolean shop;
+
 	public static void keyboardInv() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			gameMode = pMode;
@@ -44,6 +46,8 @@ public class Input {
 				action();
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_G)) {
 				Stats.inventory.add(new Item("Test Ore", "Test ore", 22, ItemType.TEST, 100));
+			} else if (Keyboard.getEventKey() == Keyboard.KEY_L && Keyboard.getEventKeyState()) {
+				shop = !shop;
 			}
 		}
 	}

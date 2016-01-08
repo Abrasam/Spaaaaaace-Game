@@ -203,4 +203,10 @@ public class Render {
 			counter--;
 		}
 	}
+	
+	public static void drawShop() {
+		if (Input.shop) {
+			new Shop("Orange", 1, "Orange").draw();
+		}
+	}
 }

@@ -159,6 +159,7 @@ public class Main {
 			}
 			 
 			Render.drawHUD(false);
+			Render.drawShop();
 		} else if (gameMode == Mode.INVENTORY) {
 			Render.drawInventory();
 			Render.drawHUD(true);
