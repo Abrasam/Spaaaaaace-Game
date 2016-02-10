@@ -7,24 +7,7 @@ import static com.olympiarpg.game.main.Main.pY;
 import static com.olympiarpg.game.main.Main.textures;
 import static com.olympiarpg.game.main.Main.xF;
 import static com.olympiarpg.game.main.Main.yF;
-import static org.lwjgl.opengl.GL11.GL_LINES;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glLineWidth;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glRecti;
-import static org.lwjgl.opengl.GL11.glRotatef;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glVertex2f;
-import static org.lwjgl.opengl.GL11.glVertex2i;
+import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
@@ -63,24 +46,28 @@ public class Render {
 				glRecti(x*128+10, y*128+10, x*128+118, y*128+118);
 			}
 		}
-		int noItems = 0;
+		int x = 0;
+		int y = 0;
 		glEnable(GL_TEXTURE_2D);
-		for (int y = 0; y < 6; y++) {
-			for (int x = 0; x < 10; x++) {
-				if (noItems < Stats.inventory.size()) {
-					textures.get(Stats.inventory.get(noItems).texId).bind();
-					glBegin(GL_QUADS);
-						glTexCoord2f(0, 0);
-						glVertex2f(128*x+10, 128*y+10);
-						glTexCoord2f(1, 0);
-						glVertex2f(128*x+128-10, 128*y+10);
-						glTexCoord2f(1, 1);
-						glVertex2f(128*x+128-10, 128*y+128-10);
-						glTexCoord2f(0, 1);
-						glVertex2f(128*x+10, 128*y+128-10);
-					glEnd();
-					noItems++;
-				}
+		for (ItemType t : Stats.inventory.keySet()) {
+			if (Stats.inventory.get(t) > 0) {
+				textures.get(t.tex).bind();
+				glTranslatef(x*128, y*128, 0);
+				glBegin(GL_QUADS);
+					glTexCoord2f(0, 0);
+					glVertex2f(10, 10);
+					glTexCoord2f(1, 0);
+					glVertex2f(118, 10);
+					glTexCoord2f(1, 1);
+					glVertex2f(118, 118);
+					glTexCoord2f(0, 1);
+					glVertex2f(10, 118);
+				glEnd();
+				Color.white.bind();
+				Main.invFont.drawString(15, 15, String.valueOf(Stats.inventory.get(t)));
+				glLoadIdentity();
+				y = (x < 9 ? y : y + 1);
+				x = (x < 9 ? x + 1 : 0);
 			}
 		}
 		glEnable(GL_TEXTURE_2D);

@@ -45,7 +45,7 @@ public class Input {
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
 				action();
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_G)) {
-				Stats.inventory.add(new Item("Test Ore", "Test ore", 22, ItemType.TEST, 100));
+				Stats.add(ItemType.IRON_ORE, 1);
 			} else if (Keyboard.getEventKey() == Keyboard.KEY_L && Keyboard.getEventKeyState()) {
 				shop = !shop;
 			}

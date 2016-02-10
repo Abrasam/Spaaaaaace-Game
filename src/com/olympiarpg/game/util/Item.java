@@ -1,45 +1,28 @@
 package com.olympiarpg.game.util;
 
 public class Item {
-	private String name;
-	private int value;
-	private String description;
-	private ItemType type;
-	public int texId;
 	
-	public Item(String n, String d, int v, ItemType type, int texId) {
-		setName(n);
-		setDescription(d);
-		setValue(v);
+	private ItemType type;
+	private int count;
+
+	public Item(ItemType type, int count) {
 		this.type = type;
-		this.texId = texId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public int getValue() {
-		return value;
-	}
-
-	public void setValue(int value) {
-		this.value = value;
+		this.count = count;
 	}
 
 	public ItemType getType() {
 		return type;
+	}
+
+	public void setType(ItemType type) {
+		this.type = type;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 }

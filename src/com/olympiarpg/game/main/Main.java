@@ -17,7 +17,6 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-import com.olympiarpg.game.util.Item;
 import com.olympiarpg.game.util.ItemType;
 import com.olympiarpg.game.util.Mode;
 import com.olympiarpg.game.util.Render;
@@ -31,6 +30,7 @@ public class Main {
 	//Font used for text.
 	public static TrueTypeFont font;
 	public static TrueTypeFont deadFont;
+	public static TrueTypeFont invFont;
 	
 	//Location of player.
 	public static int pX = 5;
@@ -103,6 +103,9 @@ public class Main {
 			textures.put(43, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/rocketf.png")), GL_NEAREST));
 			textures.put(70, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/sat1.png")), GL_NEAREST));
 			textures.put(100, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/oretest.png")), GL_NEAREST));
+			textures.put(101, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/scrap.png")), GL_NEAREST));
+			textures.put(102, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/platinumore.png")), GL_NEAREST));
+			textures.put(103, TextureLoader.getTexture("PNG", new FileInputStream(new File("res/images/ironingot.png")), GL_NEAREST));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -114,6 +117,8 @@ public class Main {
 		font = new TrueTypeFont(f, true);
 		f = new Font("Arial", Font.BOLD, 48);
 		deadFont = new TrueTypeFont(f, true);
+		f = new Font("Arial", Font.BOLD, 16);
+		invFont = new TrueTypeFont(f, true);
 		
 		//Initialise sound.
 		try {
@@ -174,7 +179,7 @@ public class Main {
 	public static void action() {
 		if (Space.getCurrentSector().getTiles()[pX][pY] == 11) {
 			Space.getCurrentSector().getTiles()[pX][pY] = 3;
-			Stats.inventory.add(new Item("Test Ore", "Some delicious test ore.", 22, ItemType.TEST, 100));
+			Stats.add(ItemType.IRON_ORE, 1);
 		}
 	}
 	
